@@ -2,7 +2,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import { sessionMiddleware, passport } from "./lib/auth";
+import { sessionMiddleware, passport } from "./lib/auth.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
 // init express

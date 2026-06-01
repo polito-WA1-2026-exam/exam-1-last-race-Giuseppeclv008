@@ -3,7 +3,7 @@
 import passport from "passport";
 import session from "express-session";
 import { Strategy as LocalStrategy } from "passport-local";
-import { getUserByUsername, verifyPassword } from "../dao/userDao.js";
+import { getUserByUsername, getUserById, verifyPassword } from "../dao/userDao.js";
 
 passport.use(new LocalStrategy(async (username, password, done) => {
     try {

@@ -3,11 +3,11 @@
 import { Router } from "express";
 import { body, param, validationResult } from "express-validator";
 import { isLoggedIn } from "../lib/auth.js";
-import { getStations, getLinesWithStations, getSegments, getLinesAndInterchanges } from "../dao/networkDao.js";
+import { getStations, getLinesWithStations, getSegments, getLineSetsAndInterchanges } from "../dao/networkDao.js";
 import { getEvents } from "../dao/eventDao.js";
 import { createGame, getPendingGame, completeGame, invalidateGame, getRanking } from "../dao/gameDao.js";
 import { pickStartAndDest } from "../lib/graph.js";
-import { validateRoute } from "../lib/routeValidation.js";
+import { isValidRoute } from "../lib/routeValidation.js";
 import { applyRoute } from "../lib/events.js";
 import { shuffle } from "../lib/graph.js";
 
@@ -57,13 +57,11 @@ router.post("/api/games/:id/route", isLoggedIn,
             if (game.player_id !== req.user.id) return res.status(403).json({ error: "Not your game" });
 
             const route = req.body.route.map(parseInt);
-            const { lineSets, interchanges } = await getLinesAndInterchanges();
+            const { lineSets, interchanges } = await getLineSetsAndInterchanges();
             const elapsed = Date.now() - new Date(game.created_at).getTime();
             const expired = elapsed > PLANNING_TIME + GRACE_MS;
 
-            const result = validateRoute({
-                route, startId: game.start_station_id, destId: game.dest_station_id, lineSets, interchanges,
-            });
+            const result = isValidRoute(route, game.start_station_id, game.dest_station_id, lineSets, interchanges);
 
             if (!result.valid) {
                 await invalidateGame(gameId);
