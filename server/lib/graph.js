@@ -22,7 +22,9 @@ export function buildAdjacency(edges) {
         adj.get(u).add(v);
     };
 
-    for (const [from, to] of edges) {
+    for (const e of edges) {
+        const from = Array.isArray(e) ? e[0] : e.from;
+        const to = Array.isArray(e) ? e[1] : e.to;
         add(from, to);
         add(to, from);
     }
