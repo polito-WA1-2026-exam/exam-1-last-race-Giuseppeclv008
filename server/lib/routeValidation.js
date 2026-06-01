@@ -1,6 +1,6 @@
 "use strict";
 
-const segKey = (a, b) => (a < b ? `${a}-${b}` : `${a}-${b}`);
+const segKey = (a, b) => (a < b ? `${a}-${b}` : `${b}-${a}`);
 // Decide wheater a submitted route is Valid. A Route is valid when it:
 // 1. Has at least 2 segments and starts at stratId and ends at destId
 // 2. Each segment corresponds to an edge in the graph

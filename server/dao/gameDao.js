@@ -18,7 +18,7 @@ export async function invalidateGame(gameId) {
 }
 
 export async function completeGame(gameId, finalScore, steps) {
-    await dbRun("UPDATE games SET status = 'completed', final_score = ? WHERE id = ?", [score, gameId]);
+    await dbRun("UPDATE games SET status = 'completed', score = ? WHERE id = ?", [finalScore, gameId]);
     for (const s of steps) {
         await dbRun(
             "INSERT INTO game_segments (game_id, ord, from_station_id, to_station_id, event_id, coins_after) VALUES (?, ?, ?, ?, ?, ?)",

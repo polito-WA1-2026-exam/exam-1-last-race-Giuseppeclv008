@@ -54,9 +54,9 @@ router.post("/api/games/:id/route", isLoggedIn,
             const gameId = parseInt(req.params.id, 10);
             const game = await getPendingGame(gameId);
             if (!game) return res.status(404).json({ error: "Game not found or already completed" });
-            if (game.player_id !== req.user.id) return res.status(403).json({ error: "Not your game" });
+            if (game.user_id !== req.user.id) return res.status(403).json({ error: "Not your game" });
 
-            const route = req.body.route.map(parseInt);
+            const route = req.body.route.map(Number);
             const { lineSets, interchanges } = await getLineSetsAndInterchanges();
             const elapsed = Date.now() - new Date(game.created_at).getTime();
             const expired = elapsed > PLANNING_TIME + GRACE_MS;
@@ -74,7 +74,7 @@ router.post("/api/games/:id/route", isLoggedIn,
             const { steps, finalScore } = applyRoute(route.length - 1, events, 20);
 
             const persisted = steps.map((s, i) => ({
-                ord: interchanges, from: route[i], to: route[i + 1], eventId: s.event.id, coinsAfter: s.coinsAfter,
+                ord: i, from: route[i], to: route[i + 1], eventId: s.event.id, coinsAfter: s.coinsAfter,
             }));
             await completeGame(gameId, finalScore, persisted);
 
