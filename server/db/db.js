@@ -1,7 +1,6 @@
 "use strict";
 import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-export const DB_PATH = "server/db/db.js";
+export const DB_PATH = "db/lastrace.db";
 
 // Singleton pattern to ensure that only one database connection is established
 // If the database connection has already been established, it returns the existing promise
@@ -14,7 +13,7 @@ export function getDb() {
         (err) =>{if (err) throw err;});
     db.run("PRAGMA foreign_keys = ON");
   }
-  return dbPromise;
+  return db;
 }
 
 export function dbAll(sql, params = []) {
@@ -33,7 +32,7 @@ export function dbRun(sql, params = []) {
     return new Promise((resolve, reject) => {
         getDb().run(sql, params, function(err) {
              if (err) reject(err);
-             else resolve({lastId: this.lastID, changes: this.changes});
+             else resolve({lastID: this.lastID, changes: this.changes});
         });
     });
 }
