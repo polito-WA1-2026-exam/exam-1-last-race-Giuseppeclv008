@@ -3,12 +3,12 @@
 import passport from "passport";
 import session from "express-session";
 import { Strategy as LocalStrategy } from "passport-local";
-import { getUserByUsername, verifyPassword } from "../dao/userDao.js";
+import { getUserByUsername, getUserById, verifyPassword } from "../dao/userDao.js";
 
 passport.use(new LocalStrategy(async (username, password, done) => {
     try {
         const user = await getUserByUsername(username);
-        if (!user || !verifyPassword(user, password)) return done(null, false, { message: "Incorrect username or password." });
+        if (!user || !(await verifyPassword(user, password))) return done(null, false, { message: "Incorrect username or password." });
         return done(null, { id: user.id, username: user.username, name: user.name });
     } catch (err) {
         return done(err);

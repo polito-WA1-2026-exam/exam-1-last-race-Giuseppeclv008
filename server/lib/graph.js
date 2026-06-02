@@ -1,5 +1,18 @@
 "use strict";
 
+
+// Fisher-Yates shuffle
+export function shuffle(arr, rng = Math.random) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        const temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+    return a;
+}
+
 // Utility function to build an adjacency list from a list of edges for a non oriented graph
 export function buildAdjacency(edges) {
     const adj = new Map();
@@ -9,7 +22,9 @@ export function buildAdjacency(edges) {
         adj.get(u).add(v);
     };
 
-    for (const [from, to] of edges) {
+    for (const e of edges) {
+        const from = Array.isArray(e) ? e[0] : e.from;
+        const to = Array.isArray(e) ? e[1] : e.to;
         add(from, to);
         add(to, from);
     }
@@ -38,7 +53,7 @@ export function bfsDistances(adj, startId) {
 // rng is injectable for deterministic tests. Throws if no valid pair exists.
 export function pickStartAndDest(stationsId, edges, rng= Math.random) {
     const adj = buildAdjacency(edges);
-    const shuffledStart = [...stationsId].sort(() => rng() - 0.5);
+    const shuffledStart = shuffle(stationsId);
     for (const startId of shuffledStart) {
         const distances = bfsDistances(adj, startId);
         const eligible = stationsId.filter((id)=>( distances.get(id) ?? 0 ) >= 3);

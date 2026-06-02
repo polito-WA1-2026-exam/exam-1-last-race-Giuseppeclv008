@@ -1,0 +1,306 @@
+{
+  "info": {
+    "name": "Last Race API",
+    "description": "Collection to test the Last Race server (Express + passport session auth).\n\nAuth is cookie-based (connect.sid). Postman keeps the session cookie in its cookie jar automatically, so just run **Login** first, then the rest.\n\nVariables (Collection > Variables tab):\n- baseUrl: http://localhost:3001\n- username / password: set real exam credentials (alice/bob/carol)\n- gameId: auto-filled by the 'Start Game' request test script\n\nUsual flow: Login -> Get Network -> Start Game -> Submit Route -> Ranking -> Logout.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3001", "type": "string" },
+    { "key": "username", "value": "alice", "type": "string" },
+    { "key": "password", "value": "CHANGE_ME", "type": "string" },
+    { "key": "gameId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Sessions",
+      "item": [
+        {
+          "name": "Login (POST /api/sessions)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('returns user', () => pm.expect(b).to.have.property('id'));",
+                  "console.log('Logged in as', b.username);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/sessions", "host": ["{{baseUrl}}"], "path": ["api", "sessions"] }
+          }
+        },
+        {
+          "name": "Current session (GET /api/sessions/current)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 when authenticated', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/sessions/current", "host": ["{{baseUrl}}"], "path": ["api", "sessions", "current"] }
+          }
+        },
+        {
+          "name": "Logout (DELETE /api/sessions/current)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/sessions/current", "host": ["{{baseUrl}}"], "path": ["api", "sessions", "current"] }
+          }
+        },
+        {
+          "name": "Login - bad credentials (expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"wrong-password\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/sessions", "host": ["{{baseUrl}}"], "path": ["api", "sessions"] }
+          }
+        },
+        {
+          "name": "Login - missing fields (expect 422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422 Invalid input', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/sessions", "host": ["{{baseUrl}}"], "path": ["api", "sessions"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Game",
+      "item": [
+        {
+          "name": "Get Network (GET /api/network)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('has stations/lines/segments', () => {",
+                  "  pm.expect(b).to.have.property('stations');",
+                  "  pm.expect(b).to.have.property('lines');",
+                  "  pm.expect(b).to.have.property('segments');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/network", "host": ["{{baseUrl}}"], "path": ["api", "network"] }
+          }
+        },
+        {
+          "name": "Start Game (POST /api/games)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('has gameId + start/dest', () => {",
+                  "  pm.expect(b).to.have.property('gameId');",
+                  "  pm.expect(b).to.have.property('start');",
+                  "  pm.expect(b).to.have.property('dest');",
+                  "});",
+                  "pm.collectionVariables.set('gameId', b.gameId);",
+                  "console.log('gameId =', b.gameId, '| start', b.start, '| dest', b.dest);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/api/games", "host": ["{{baseUrl}}"], "path": ["api", "games"] }
+          }
+        },
+        {
+          "name": "Submit Route (POST /api/games/:id/route)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('has valid + finalScore', () => {",
+                  "  pm.expect(b).to.have.property('valid');",
+                  "});",
+                  "console.log('valid =', b.valid, '| finalScore =', b.finalScore);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"route\": [1, 2, 3]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/route",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "{{gameId}}", "route"]
+            },
+            "description": "Replace the route array with a valid sequence of station IDs (start ... dest) from the Start Game response. Server enforces a 90s planning window (+5s grace) from game creation."
+          }
+        },
+        {
+          "name": "Submit Route - invalid body (expect 422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422 Invalid input', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"route\": \"not-an-array\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/route",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "{{gameId}}", "route"]
+            }
+          }
+        },
+        {
+          "name": "Submit Route - unknown game (expect 404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not found', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"route\": [1, 2]\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/games/999999/route",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "999999", "route"]
+            }
+          }
+        },
+        {
+          "name": "Ranking (GET /api/games/ranking)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('returns array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/games/ranking", "host": ["{{baseUrl}}"], "path": ["api", "games", "ranking"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth guard - no session (expect 401)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Clear cookies so this hits the isLoggedIn guard.",
+              "const jar = pm.cookies.jar();",
+              "jar.clear(pm.environment.get('baseUrl') || 'http://localhost:3001', () => {});"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/network", "host": ["{{baseUrl}}"], "path": ["api", "network"] }
+      },
+      "description": "Run after Logout (or standalone) to confirm protected routes reject unauthenticated requests."
+    }
+  ]
+}
