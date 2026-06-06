@@ -1,12 +1,23 @@
 import './App.css'
-import { Container } from 'react-bootstrap'
+import { Container, Spinner } from 'react-bootstrap'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { useAuth } from './contexts/AuthContext.jsx'
 import NavBar from './components/NavBar.jsx'
 import Instructions from './pages/Instructions.jsx'
 import LoginForm from './pages/LoginForm.jsx'
 import PlayPage from './pages/PlayPage.jsx'
 import Ranking from './pages/Ranking.jsx'
-import RequireAuth from './components/RequireAuth.jsx'
+
+// Guards a route: renders children only when a user is logged in,
+// otherwise redirects to the login page.
+export function RequireAuth({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="text-center mt-5"><Spinner animation="border" /></div>;
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
+}
+
+
 
 export default function App() {
 

@@ -3,12 +3,10 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext.jsx';
 
-// Top navigation bar.
-// Props:
-//   user      — the authenticated user object (or null when logged out)
-//   onLogout  — called when the user clicks the logout button
-export default function NavBar({ user, onLogout }) {
+// Top navigation bar. Reads auth state from AuthContext.
+export default function NavBar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const handleLogout = async () => { await logout(); navigate("/"); };
