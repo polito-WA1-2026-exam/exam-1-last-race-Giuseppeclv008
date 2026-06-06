@@ -1,15 +1,13 @@
 "use strict";
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Button from 'react-bootstrap/Button';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext.jsx';
+import { Navbar, Nav, Button } from "react-bootstrap";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
-// Top navigation bar. Reads auth state from AuthContext.
 export default function NavBar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const handleLogout = async () => { await logout(); navigate("/"); };
+
   return (
     <Navbar expand="md" className="atm-nav">
       <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 p-0">

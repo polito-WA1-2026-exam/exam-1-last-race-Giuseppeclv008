@@ -1,0 +1,318 @@
+/* =========================================================================
+   Last Race — ATM Milano theme
+   Inspired by Bob Noorda's 1964 Metropolitana Milanese wayfinding:
+   Helvetica, white "paper", the red platform band, authentic line colours.
+   ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* ATM corporate + line colours */
+  --atm-red: #E2001A;
+  --atm-red-dark: #B80016;
+  --m1: #D7282F; /* Linea Rossa  */
+  --m2: #007E3A; /* Linea Verde  */
+  --m3: #F1A719; /* Linea Gialla */
+  --m4: #0073BB; /* Linea Blu    */
+
+  /* Neutrals — one consistent gray family */
+  --ink: #181818;
+  --ink-soft: #5c5c5c;
+  --paper: #ffffff;
+  --paper-2: #f3f3f1;
+  --rule: #e2e2dd;
+
+  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", system-ui, sans-serif;
+  --shadow-card: 0 1px 2px rgba(24, 24, 24, .05), 0 10px 28px rgba(24, 24, 24, .06);
+  --focus: 0 0 0 3px rgba(0, 115, 187, .45);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background-color: var(--paper-2);
+  /* faint "map paper" dot grid for texture, not flat sterile white */
+  background-image: radial-gradient(rgba(24, 24, 24, .05) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--atm-red); color: #fff; }
+
+/* ------------------------------------------------------------------ brand */
+.atm-logo {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background: var(--atm-red);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.45rem;
+  line-height: 1;
+  border-radius: 7px;
+  box-shadow: 0 2px 6px rgba(226, 0, 26, .35);
+}
+.atm-wordmark {
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.atm-wordmark small {
+  display: block;
+  font-size: .58rem;
+  font-weight: 600;
+  letter-spacing: .34em;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+/* The Noorda platform band — red stripe, white uppercase Helvetica. */
+.atm-band {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  background: var(--atm-red);
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: .6rem 1rem;
+  border-radius: 8px 8px 0 0;
+  margin: 0;
+}
+.atm-band.m1 { background: var(--m1); }
+.atm-band.m2 { background: var(--m2); }
+.atm-band.m3 { background: var(--m3); color: #181818; }
+.atm-band.m4 { background: var(--m4); }
+.atm-band .station-dot {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 3px currentColor;
+  flex: none;
+}
+
+/* Line "M#" pills, used in legends and lists */
+.line-pill {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2rem;
+  height: 1.55rem;
+  padding: 0 .45rem;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 800;
+  font-size: .82rem;
+  letter-spacing: .02em;
+}
+.line-pill.m1 { background: var(--m1); }
+.line-pill.m2 { background: var(--m2); }
+.line-pill.m3 { background: var(--m3); color: #181818; }
+.line-pill.m4 { background: var(--m4); }
+
+.line-legend { display: flex; flex-wrap: wrap; gap: .5rem 1.1rem; align-items: center; }
+.line-legend .leg { display: inline-flex; align-items: center; gap: .45rem; font-weight: 600; font-size: .85rem; }
+
+/* ------------------------------------------------------------------- nav */
+.navbar.atm-nav {
+  background: var(--paper) !important;
+  border-bottom: 3px solid var(--atm-red);
+  padding: .5rem 1.25rem;
+  box-shadow: 0 1px 0 rgba(24, 24, 24, .04);
+}
+.atm-nav .nav-link {
+  color: var(--ink) !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: .9rem;
+  position: relative;
+  margin: 0 .15rem;
+  transition: color .2s ease;
+}
+.atm-nav .nav-link:hover { color: var(--atm-red) !important; }
+.atm-nav .nav-link.active { color: var(--atm-red) !important; }
+.atm-nav .nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: .5rem; right: .5rem; bottom: -.55rem;
+  height: 3px;
+  background: var(--atm-red);
+  border-radius: 2px;
+}
+.atm-nav .navbar-text { color: var(--ink-soft); font-weight: 600; }
+
+/* ----------------------------------------------------------------- cards */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.card-title { font-weight: 800; letter-spacing: -.01em; }
+
+/* Generic section heading style */
+h1, h2, h3, h4, h5 { font-weight: 800; letter-spacing: -.015em; }
+h3 { font-size: 1.5rem; }
+
+/* --------------------------------------------------------------- buttons */
+.btn {
+  border-radius: 6px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .035em;
+  font-size: .86rem;
+  padding: .5rem 1.1rem;
+  transition: transform .12s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { box-shadow: var(--focus); outline: none; }
+
+.btn-primary { background: var(--atm-red); border-color: var(--atm-red); }
+.btn-primary:hover, .btn-primary:focus { background: var(--atm-red-dark); border-color: var(--atm-red-dark); }
+.btn-success { background: var(--m2); border-color: var(--m2); }
+.btn-success:hover, .btn-success:focus { background: #00692f; border-color: #00692f; }
+.btn-outline-info { color: var(--m4); border-color: var(--m4); }
+.btn-outline-info:hover { background: var(--m4); border-color: var(--m4); color: #fff; }
+.btn-outline-secondary { color: var(--ink-soft); border-color: var(--rule); }
+.btn-outline-secondary:hover { background: var(--paper-2); border-color: var(--ink-soft); color: var(--ink); }
+.btn-outline-danger { color: var(--atm-red); border-color: var(--atm-red); }
+.btn-outline-danger:hover { background: var(--atm-red); border-color: var(--atm-red); color: #fff; }
+
+/* ---------------------------------------------------------------- badges */
+.badge {
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  padding: .4em .6em;
+}
+.badge.bg-success { background: var(--m2) !important; }
+.badge.bg-danger  { background: var(--m1) !important; }
+.badge.bg-warning { background: var(--m3) !important; color: #181818 !important; }
+.badge.bg-info    { background: var(--m4) !important; }
+.badge.fs-5 { box-shadow: none; }
+
+/* ------------------------------------------------------------ list groups */
+.list-group-item {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--rule);
+  font-weight: 500;
+}
+.list-group-item-action { cursor: pointer; transition: background-color .15s ease, padding-left .15s ease; }
+.list-group-item-action:hover { background: var(--paper-2); padding-left: 1.1rem; }
+
+/* ----------------------------------------------------------------- table */
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--ink);
+  color: var(--ink);
+  margin-bottom: 0;
+}
+.table > thead th {
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: .76rem;
+  color: var(--ink-soft);
+  border-bottom: 2px solid var(--ink);
+}
+.table > tbody > tr > td { border-color: var(--rule); vertical-align: middle; }
+.table-leaderboard tbody tr:first-child td { font-weight: 800; }
+.rank-num {
+  display: inline-grid; place-items: center;
+  width: 1.7rem; height: 1.7rem;
+  background: var(--atm-red); color: #fff;
+  border-radius: 5px; font-weight: 800; font-size: .9rem;
+}
+.rank-num.silver { background: var(--ink-soft); }
+.rank-num.bronze { background: #9a6a2f; }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ----------------------------------------------------------------- forms */
+.form-control {
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  padding: .55rem .75rem;
+}
+.form-control:focus { border-color: var(--m4); box-shadow: var(--focus); }
+.form-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: .74rem;
+  color: var(--ink-soft);
+  margin-bottom: .3rem;
+}
+
+/* ----------------------------------------------------------------- alerts */
+.alert { border-radius: 8px; border: 1px solid transparent; font-weight: 500; }
+.alert-danger { background: #fdeaec; color: var(--atm-red-dark); border-color: #f6c9ce; }
+.alert-secondary { background: var(--paper-2); color: var(--ink-soft); border-color: var(--rule); }
+
+/* ------------------------------------------------------------ network map */
+.network-map {
+  width: 100%;
+  height: auto;
+  background-color: #fff;
+  background-image:
+    repeating-linear-gradient(0deg, #f6f6f4 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, #f6f6f4 0 1px, transparent 1px 40px);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+}
+.map-label {
+  font-family: var(--font);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  fill: #181818;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.map-tag {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .6px;
+}
+
+/* ---------------------------------------------------------- result ticket */
+.atm-ticket {
+  position: relative;
+  background: var(--paper);
+  border: 1px dashed var(--ink-soft);
+  border-radius: 10px;
+  padding: 2.25rem 1.5rem;
+}
+.score-figure {
+  font-weight: 800;
+  font-size: clamp(3.5rem, 12vw, 6rem);
+  line-height: 1;
+  letter-spacing: -.04em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.score-figure .unit { font-size: .28em; color: var(--ink-soft); letter-spacing: .02em; }
+
+.display-1 { font-weight: 800; color: var(--ink); letter-spacing: -.03em; text-shadow: none; }
+
+/* small uppercase label */
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
