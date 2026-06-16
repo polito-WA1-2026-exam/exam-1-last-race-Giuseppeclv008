@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Form, Button, Alert, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext.jsx";
+import { useAuth } from "../contexts/auth-context.js";
 
 export default function LoginForm() {
   const { login } = useAuth();

@@ -1,7 +1,7 @@
 "use strict";
 import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext.jsx";
+import { useAuth } from "../contexts/auth-context.js";
 
 const LINES = [
     { id: "m1", pill: "M1", label: "Rossa" },

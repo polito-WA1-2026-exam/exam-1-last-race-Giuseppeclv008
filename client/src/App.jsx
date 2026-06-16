@@ -1,7 +1,7 @@
 import './App.css'
 import { Container, Spinner } from 'react-bootstrap'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useAuth } from './contexts/AuthContext.jsx'
+import { useAuth } from './contexts/auth-context.js'
 import NavBar from './components/NavBar.jsx'
 import Instructions from './pages/Instructions.jsx'
 import LoginForm from './pages/LoginForm.jsx'

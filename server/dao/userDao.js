@@ -8,7 +8,7 @@ export async function getUserByUsername(username) {
 }
 
 export async function getUserById(id) {
-    const u = await dbGet("SELECT * FROM users WHERE id = ?", [id]);
+    const u = await dbGet("SELECT id, username, name FROM users WHERE id = ?", [id]);
     return u || null;
 }
 

@@ -1,29 +1,43 @@
 "use strict";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Row, Col, Card, Badge } from "react-bootstrap";
 import NetworkMap from "./NetworkMap.jsx";
 import CountdownTimer from "./CountdownTimer.jsx";
 import SegmentList from "./SegmentList.jsx";
 import RouteBuilder from "./RouteBuilder.jsx";
 
+const segKey = (a, b) => (a < b ? `${a}-${b}` : `${b}-${a}`);
+
 export default function PlanningView({ game, onSubmit }) {
     const stationsById = Object.fromEntries(game.stations.map((s) => [s.id, s]));
-    const [route, setRoute] = useState([]);
+    // The player may pick ANY segment, in any order — including ones that do not
+    // connect, or do not start at the assigned start. We keep the chosen segments
+    // and derive the station route from them; the server is the sole judge of
+    // validity (a wrong/incomplete route scores 0).
+    const [picks, setPicks] = useState([]);
 
-    const pickSegment = (seg) => {
-        setRoute((prev) => {
-            if (prev.length === 0) {
-                if (seg.from === game.start.id) return [seg.from, seg.to];
-                if (seg.to === game.start.id) return [seg.to, seg.from];
-                return prev; // must start at the assigned start station
+    const route = useMemo(() => {
+        const r = [];
+        for (const seg of picks) {
+            if (r.length === 0) {
+                // orient the first segment so the start station leads, when it is part of it
+                if (seg.to === game.start.id) r.push(seg.to, seg.from);
+                else r.push(seg.from, seg.to);
+            } else {
+                const last = r[r.length - 1];
+                if (seg.from === last) r.push(seg.to);       // chains forward
+                else if (seg.to === last) r.push(seg.from);  // chains (reversed)
+                else r.push(seg.from, seg.to);               // disconnected jump — allowed (server marks it invalid)
             }
-            const last = prev[prev.length - 1];
-            if (seg.from === last) return [...prev, seg.to];
-            if (seg.to === last) return [...prev, seg.from];
-            return prev; // not contiguous
-        });
-    };
-    const undo = () => setRoute((prev) => (prev.length <= 2 ? [] : prev.slice(0, -1)));
+        }
+        return r;
+    }, [picks, game.start.id]);
+
+    // segments already in the route, so the list can disable them (each used once)
+    const usedKeys = useMemo(() => new Set(picks.map((s) => segKey(s.from, s.to))), [picks]);
+
+    const pickSegment = (seg) => setPicks((prev) => [...prev, seg]);
+    const undo = () => setPicks((prev) => prev.slice(0, -1));
     const submit = useCallback(() => onSubmit(route), [route, onSubmit]);
 
     return (
@@ -60,7 +74,7 @@ export default function PlanningView({ game, onSubmit }) {
                     <Card>
                         <h5 className="atm-band m4 fs-6"><span className="station-dot" />Segments</h5>
                         <div className="p-2">
-                            <SegmentList segments={game.segments} stationsById={stationsById} onPick={pickSegment} />
+                            <SegmentList segments={game.segments} stationsById={stationsById} usedKeys={usedKeys} onPick={pickSegment} />
                         </div>
                     </Card>
                 </Col>

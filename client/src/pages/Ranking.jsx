@@ -13,9 +13,9 @@ export default function Ranking() {
 
     useEffect(() => {
         let active = true;
-        setRows(null);
-        setError("");
-        API.getRanking().then((r) => { if (active) setRows(r); }).catch((e) => { if (active) setError(e.message); });
+        API.getRanking()
+            .then((r) => { if (active) { setRows(r); setError(""); } })
+            .catch((e) => { if (active) { setError(e.message); setRows([]); } });
         return () => { active = false; };
     }, [location.key]);
 

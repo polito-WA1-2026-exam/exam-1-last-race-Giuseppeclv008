@@ -61,6 +61,13 @@ router.post("/api/games/:id/route", isLoggedIn,
             const elapsed = Date.now() - new Date(game.created_at).getTime();
             const expired = elapsed > PLANNING_TIME + GRACE_MS;
 
+            // Server-side deadline enforcement: a route arriving after the 90s
+            // (+grace) planning window is rejected and scores 0, whatever it contains.
+            if (expired) {
+                await invalidateGame(gameId);
+                return res.json({ valid: false, expired: true, steps: [], finalScore: 0 });
+            }
+
             const result = isValidRoute(route, game.start_station_id, game.dest_station_id, lineSets, interchanges);
 
             if (!result.valid) {
@@ -93,7 +100,7 @@ router.post("/api/games/:id/route", isLoggedIn,
         } catch (e) { next(e); }
     });
 
-router.get("/api/games/ranking", isLoggedIn, async (req, res, next) => {
+router.get("/api/ranking", isLoggedIn, async (req, res, next) => {
     try {
         const ranking = await getRanking();
         res.json(ranking);

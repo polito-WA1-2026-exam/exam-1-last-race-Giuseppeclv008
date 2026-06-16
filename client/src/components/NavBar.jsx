@@ -1,7 +1,7 @@
 "use strict";
 import { Navbar, Nav, Button } from "react-bootstrap";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext.jsx";
+import { useAuth } from "../contexts/auth-context.js";
 
 export default function NavBar() {
   const { user, logout } = useAuth();

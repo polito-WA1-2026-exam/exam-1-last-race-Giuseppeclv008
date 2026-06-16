@@ -15,9 +15,13 @@ export function isValidRoute(route, startId, destId, lineSets, interchanges) {
     if (route[route.length - 1] !== destId) return { valid: false, reason: "route does not end at the correct station" };
 
     const segLines = [];
+    const usedSegments = new Set(); // a segment may be travelled at most once (spec rule)
     //  check segments and build the list of lines for each segment, if any
     for (let i = 0; i < route.length - 1; i++) {
-        const ls = lineSets.get(segKey(route[i], route[i + 1])); // set of lines for the current segment, using segKey to handle both directions
+        const key = segKey(route[i], route[i + 1]); // undirected key, handles both directions
+        if (usedSegments.has(key)) return { valid: false, reason: `segment ${key} used more than once` };
+        usedSegments.add(key);
+        const ls = lineSets.get(key); // set of lines for the current segment
         if (!ls || ls.size === 0) return { valid: false, reason: `no connection ${route[i]}-${route[i + 1]}` };
         segLines.push(ls);
     }
