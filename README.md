@@ -87,4 +87,7 @@ During a game (Planning phase):
 | carol    | password3 | has not played yet |
 
 ## Use of AI Tools
-AI (Claude) was used to audit the project against the exam specification and to help fix a few points: enforcing the "each segment only once" rule on both server and client, enforcing the 90 s limit server-side, tidying a couple of React hook/effect patterns flagged by ESLint, and adjusting the seed so the number of interchange stations stays within half of the total. The AI output was reviewed line by line, the database changes were verified with SQL queries (counts, graph connectivity, reachable pairs) and the password reset was checked against the scrypt verification used at login. All design decisions remain my own and I am able to explain the whole codebase.
+
+I've used Claude to implement the NetworkMap logic component, to design a dynamic map retrieving the info for the rendering of the map
+from the information retrieved from the database.
+I've also used Claude to check if all the exam specification had been satisfied or not and find any possible flaw in the code.
