@@ -10,7 +10,7 @@ const segKey = (a, b) => (a < b ? `${a}-${b}` : `${b}-${a}`);
 
 export default function PlanningView({ game, onSubmit }) {
     const stationsById = Object.fromEntries(game.stations.map((s) => [s.id, s]));
-    // The player may pick ANY segment, in any order — including ones that do not
+    // The player may pick ANY segment, in any order - including ones that do not
     // connect, or do not start at the assigned start. We keep the chosen segments
     // and derive the station route from them; the server is the sole judge of
     // validity (a wrong/incomplete route scores 0).
@@ -27,7 +27,7 @@ export default function PlanningView({ game, onSubmit }) {
                 const last = r[r.length - 1];
                 if (seg.from === last) r.push(seg.to);       // chains forward
                 else if (seg.to === last) r.push(seg.from);  // chains (reversed)
-                else r.push(seg.from, seg.to);               // disconnected jump — allowed (server marks it invalid)
+                else r.push(seg.from, seg.to);               // disconnected jump - allowed (server marks it invalid)
             }
         }
         return r;

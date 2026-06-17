@@ -35,7 +35,7 @@ export default function SetupView({ onReady }) {
         </div>
       </div>
       <NetworkMap stations={network.stations} lines={network.lines} showLines />
-      <Button className="mt-3" onClick={() => onReady(network)}>I&apos;m ready — start planning</Button>
+      <Button className="mt-3" onClick={() => onReady(network)}>I&apos;m ready - start planning</Button>
     </div>
   );
 }

@@ -19,10 +19,10 @@ export default function Instructions() {
                 <p className="eyebrow mb-3">A single-player metro-routing game</p>
                 <ol className="lh-lg ps-3" style={{ maxWidth: "62ch" }}>
                     <li>You start each game with <b>20 coins</b>.</li>
-                    <li><b>Setup</b> — study the metro map: stations, connections and lines.</li>
-                    <li><b>Planning</b> — you get a start and a destination plus a shuffled list of segments. In 90 seconds, rebuild the network in your head and pick segments in order to form a valid route. Lines may only change at interchange stations.</li>
-                    <li><b>Execution</b> — each segment triggers a random event that adds or removes coins.</li>
-                    <li><b>Result</b> — your score is the coins left (never below 0). An invalid or incomplete route scores 0.</li>
+                    <li><b>Setup</b> - study the metro map: stations, connections and lines.</li>
+                    <li><b>Planning</b> - you get a start and a destination plus a shuffled list of segments. In 90 seconds, rebuild the network in your head and pick segments in order to form a valid route. Lines may only change at interchange stations.</li>
+                    <li><b>Execution</b> - each segment triggers a random event that adds or removes coins.</li>
+                    <li><b>Result</b> - your score is the coins left (never below 0). An invalid or incomplete route scores 0.</li>
                 </ol>
 
                 {user ? (

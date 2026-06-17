@@ -1,5 +1,5 @@
 /* =========================================================================
-   Last Race — ATM Milano theme
+   Last Race - ATM Milano theme
    Inspired by Bob Noorda's 1964 Metropolitana Milanese wayfinding:
    Helvetica, white "paper", the red platform band, authentic line colours.
    ========================================================================= */
@@ -15,7 +15,7 @@
   --m3: #F1A719; /* Linea Gialla */
   --m4: #0073BB; /* Linea Blu    */
 
-  /* Neutrals — one consistent gray family */
+  /* Neutrals - one consistent gray family */
   --ink: #181818;
   --ink-soft: #5c5c5c;
   --paper: #ffffff;
@@ -74,7 +74,7 @@ body {
   margin-top: 2px;
 }
 
-/* The Noorda platform band — red stripe, white uppercase Helvetica. */
+/* The Noorda platform band - red stripe, white uppercase Helvetica. */
 .atm-band {
   display: flex;
   align-items: center;

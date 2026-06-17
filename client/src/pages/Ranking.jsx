@@ -24,7 +24,7 @@ export default function Ranking() {
 
     return (
         <Card>
-            <h3 className="atm-band fs-5"><span className="station-dot" />Global ranking — best scores</h3>
+            <h3 className="atm-band fs-5"><span className="station-dot" />Global ranking - best scores</h3>
             <div className="p-3">
                 <Table hover responsive className="table-leaderboard align-middle">
                     <thead><tr><th style={{ width: "4rem" }}>Pos</th><th>Player</th><th className="text-end">Best score</th></tr></thead>

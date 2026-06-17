@@ -1,5 +1,5 @@
 # Exam #1: "Last Race"
-## Student: s354774 CALVELLO GIUSEPPE
+## Student: s354774 CALVELLO GIUSEPPE ANTONIO
 
 > Single-player metro-routing game inspired by *Race the Rails*, themed on the Milano underground (ATM).
 > Two-server SPA: React 19 client (`client/`, Vite dev server) + Node/Express API (`server/`) with a SQLite database.
@@ -17,19 +17,19 @@
 
 - POST `/api/sessions`
   - request body: `{ username, password }`
-  - response: `{ id, username, name }` on success, `401` on wrong credentials, `422` on invalid input.
+  - response: `{ id, username, name }` on success, `401` (**Unauthorized**) on wrong credentials, `422` (**Unprocessable Content**) on invalid input.
 - GET `/api/sessions/current`
   - request: session cookie
-  - response: the authenticated user `{ id, username, name }`, or `401` if not logged in.
+  - response: the authenticated user `{ id, username, name }`, or `401` (**Unauthorized**)  if not logged in.
 - DELETE `/api/sessions/current`
   - request: session cookie; logs the user out
   - response: empty body.
 - GET `/api/network` (auth)
   - request: session cookie
-  - response: full network for the Setup phase — `{ stations:[{id,name,x,y}], lines:[{id,name,color,stations:[stationId,…]}], segments:[{from,to}] }`.
+  - response: full network for the Setup phase - `{ stations:[{id,name,x,y}], lines:[{id,name,color,stations:[stationId,…]}], segments:[{from,to}] }`.
 - POST `/api/games` (auth)
   - request: session cookie (no body); the server assigns start/destination (BFS distance ≥ 3)
-  - response: planning payload **without line information** — `{ gameId, coins:20, start:{id,name}, dest:{id,name}, stations:[{id,name,x,y}], segments:[{from,to}] }` (segments shuffled).
+  - response: planning payload **without line information** - `{ gameId, coins:20, start:{id,name}, dest:{id,name}, stations:[{id,name,x,y}], segments:[{from,to}] }` (segments shuffled).
 - POST `/api/games/:id/route` (auth)
   - request params: `id` (game id); body: `{ route:[stationId,…] }`
   - response: validated outcome. Valid & in time → `{ valid:true, expired, finalScore, steps:[{from:{id,name}, to:{id,name}, event:{description,effect}, coinsAfter}] }`. Invalid / incomplete / late → `{ valid:false, expired, steps:[], finalScore:0 }`. `403` if the game is not the caller's, `404` if not pending, `422` on malformed input.
@@ -39,13 +39,13 @@
 
 ## Database Tables
 
-- Table `users` — registered users: `username`, display `name`, and the password stored as scrypt `hash` + per-user `salt`.
-- Table `stations` — the stations: unique `name` and `x`,`y` coordinates used to draw the schematic map.
-- Table `lines` — the metro lines: unique `name` and a display `color`.
-- Table `line_stations` — ordered membership: which stations belong to each line and in which `position`; consecutive positions define the connections (segments) and which station is an interchange.
-- Table `events` — the random events: a `description`, an integer `effect` (−4…+4, enforced by a CHECK), and a `weight` for the probability of being drawn.
-- Table `games` — one row per game: owner `user_id`, assigned `start_station_id`/`dest_station_id`, final `score`, `status` (`pending`/`completed`/`invalid`) and `created_at` (used to enforce the 90 s limit server-side).
-- Table `game_segments` — per-step result of a completed game: ordinal `ord`, the `from`/`to` stations, the drawn `event_id` and the running `coins_after`.
+- Table `users` - registered users: `username`, display `name`, and the password stored as scrypt `hash` + per-user `salt`.
+- Table `stations` - the stations: unique `name` and `x`,`y` coordinates used to draw the schematic map.
+- Table `lines` - the metro lines: unique `name` and a display `color`.
+- Table `line_stations` - ordered membership: which stations belong to each line and in which `position`; consecutive positions define the connections (segments) and which station is an interchange.
+- Table `events` - the random events: a `description`, an integer `effect` (−4…+4, enforced by a CHECK), and a `weight` for the probability of being drawn.
+- Table `games` - one row per game: owner `user_id`, assigned `start_station_id`/`dest_station_id`, final `score`, `status` (`pending`/`completed`/`invalid`) and `created_at` (used to enforce the 90 s limit server-side).
+- Table `game_segments` - per-step result of a completed game: ordinal `ord`, the `from`/`to` stations, the drawn `event_id` and the running `coins_after`.
 
 ## Main React Components
 
@@ -56,7 +56,7 @@
 - `LoginForm` (in `pages/LoginForm.jsx`): the authentication form.
 - `PlayPage` (in `pages/PlayPage.jsx`): orchestrates the game, holding the current phase and game/result state.
 - `SetupView` (in `components/SetupView.jsx`): fetches and shows the full network (stations + lines) before playing.
-- `PlanningView` (in `components/PlanningView.jsx`): the 90 s planning screen — stations-only map, start/destination, segment list and the route being built.
+- `PlanningView` (in `components/PlanningView.jsx`): the 90 s planning screen - stations-only map, start/destination, segment list and the route being built.
 - `NetworkMap` (in `components/NetworkMap.jsx`): SVG schematic map; draws lines in Setup and stations-only in Planning.
 - `SegmentList` (in `components/SegmentList.jsx`): scrollable list of connectable pairs; already-used segments are disabled (each segment once).
 - `RouteBuilder` (in `components/RouteBuilder.jsx`): shows the reconstructed route with undo/submit.
@@ -88,6 +88,6 @@ During a game (Planning phase):
 
 ## Use of AI Tools
 
-I've used Claude to implement the NetworkMap logic component, to design a dynamic map retrieving the info for the rendering of the map
+I've used Claude to implement the NetworkMap's logic for the map rendering, to design a dynamic map retrieving the info for the rendering of the map
 from the information retrieved from the database.
-I've also used Claude to check if all the exam specification had been satisfied or not and find any possible flaw in the code.
+Claude has also been used to check if all the exam specification had been satisfied or not and find any possible flaw in the code and for the theme.css file.

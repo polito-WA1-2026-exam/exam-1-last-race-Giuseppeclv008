@@ -11,7 +11,7 @@ export default function SegmentList({ segments, stationsById, usedKeys, onPick }
                 return (
                     <ListGroup.Item action key={i} disabled={used}
                         onClick={() => { if (!used) onPick(seg); }}>
-                        {stationsById[seg.from].name} — {stationsById[seg.to].name}
+                        {stationsById[seg.from].name} - {stationsById[seg.to].name}
                     </ListGroup.Item>
                 );
             })}
