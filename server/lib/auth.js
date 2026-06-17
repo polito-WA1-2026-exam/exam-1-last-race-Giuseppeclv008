@@ -15,10 +15,14 @@ passport.use(new LocalStrategy(async (username, password, done) => {
     }
 }));
 
+//Saves only the user's ID into the session, binding it to the user
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
+//takes the ID and queries the database -> smaller payload and always up to date infos
+//the middleware reads a cookie, looks up the session and finds the serialized id
+//then dserializes the id and gets the user payload
 passport.deserializeUser(async (id, done) => {
     try {
         const user = await getUserById(id);

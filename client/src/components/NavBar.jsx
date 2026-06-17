@@ -10,16 +10,19 @@ export default function NavBar() {
 
   return (
     <Navbar expand="md" className="atm-nav">
+      {/* Holds the logo with as = {Link} behaves as a router*/}
       <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 p-0">
         <span className="atm-logo" aria-hidden="true">M</span>
-        <span className="atm-wordmark">Last Race<small>ATM · Metropolitana di Milano</small></span>
+        <span className="atm-wordmark">Last Race<small>ATM - Metropolitana di Milano</small></span>
       </Navbar.Brand>
       <Nav className="me-auto ms-3">
         <Nav.Link as={NavLink} to="/" end>Instructions</Nav.Link>
+        {/* If there's a user these two navlinks are rendered */}
         {user && <Nav.Link as={NavLink} to="/play">Play</Nav.Link>}
         {user && <Nav.Link as={NavLink} to="/ranking">Ranking</Nav.Link>}
       </Nav>
       <Nav className="align-items-center">
+        {/* If there's a user renders username and logout button */}
         {user
           ? <><Navbar.Text className="me-3">Hi, {user.name}</Navbar.Text><Button size="sm" variant="outline-danger" onClick={handleLogout}>Logout</Button></>
           : <Button size="sm" variant="outline-danger" as={Link} to="/login">Login</Button>}

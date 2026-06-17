@@ -43,10 +43,18 @@ export async function getLineSetsAndInterchanges() {
       if (!lineSets.has(key)) lineSets.set(key, new Set());
       lineSets.get(key).add(line.id);
     }
+
+  // Wrap in a Set so circular lines don't double-count their own stations, 
+  // then increment the global counter to track how many *different* lines stop here.
     for (const sid of new Set(line.stations)) {
       stationLineCount.set(sid, (stationLineCount.get(sid) ?? 0) + 1);
     }
   }
+
+  // [...statioLineCount] converts the map into an array of pairs, lookking like [[StationID, count], [StationID, count]]
+  // .filter(([,c]) => c>1).map . ..... filters away stations with a count <1 and map throws away
+  // the count number, keeping only StationIDs, Set wraps everything to make an efficient search to check if
+  // a station is an interchange
   const interchanges = new Set([...stationLineCount].filter(([, c]) => c > 1).map(([id]) => id));
   return { lineSets, interchanges };
 }

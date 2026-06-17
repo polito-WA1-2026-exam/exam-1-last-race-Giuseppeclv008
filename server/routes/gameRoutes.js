@@ -14,7 +14,7 @@ import { shuffle } from "../lib/graph.js";
 const router = Router();
 const PLANNING_TIME = 90 * 1000; // 90 seconds
 const GRACE_MS = 5 * 1000; // 5 seconds added to address minor delays, client-server desync, etc.
-
+const START_COINS = 20;
 
 // Full network for the setup phase.
 router.get("/api/network", isLoggedIn, async (req, res, next) => {
@@ -31,10 +31,13 @@ router.post("/api/games", isLoggedIn, async (req, res, next) => {
         const segments = await getSegments();
         const { startId, destId } = pickStartAndDest(stations.map((s) => s.id), segments);
         const gameId = await createGame(req.user.id, startId, destId);
-        const byId = Object.fromEntries(stations.map((s) => [s.id, s]));
+        const byId = Object.fromEntries(stations.map((s) => [s.id, s])); //converts the stations array of objects in an array 
+                                                                         //in which the index corresponds to the station ID
+                                                                         //and the elements are the objects, done to perform direct 
+                                                                         //access to the needed informations
         res.json({
             gameId,
-            coins: 20,
+            coins: START_COINS,
             start: { id: startId, name: byId[startId].name },
             dest: { id: destId, name: byId[destId].name },
             stations,
@@ -43,7 +46,7 @@ router.post("/api/games", isLoggedIn, async (req, res, next) => {
     } catch (e) { next(e); }
 });
 
-
+// route submission
 router.post("/api/games/:id/route", isLoggedIn,
     param("id").isInt(),
     body("route").isArray(),
@@ -56,10 +59,10 @@ router.post("/api/games/:id/route", isLoggedIn,
             if (!game) return res.status(404).json({ error: "Game not found or already completed" });
             if (game.user_id !== req.user.id) return res.status(403).json({ error: "Not your game" });
 
-            const route = req.body.route.map(Number);
+            const route = req.body.route.map(Number);// js doesn't have a type int 
             const { lineSets, interchanges } = await getLineSetsAndInterchanges();
             const elapsed = Date.now() - new Date(game.created_at).getTime();
-            const expired = elapsed > PLANNING_TIME + GRACE_MS;
+            const expired = elapsed > PLANNING_TIME + GRACE_MS; // bool to check if the elapsed time is > than 95 secs
 
             // Server-side deadline enforcement: a route arriving after the 90s
             // (+grace) planning window is rejected and scores 0, whatever it contains.
@@ -74,15 +77,16 @@ router.post("/api/games/:id/route", isLoggedIn,
                 await invalidateGame(gameId);
                 return res.json({ valid: result.valid, expired, steps: [], finalScore: 0 });
             }
-
-            const events = await getEvents(gameId);
+            
+            // from here on we are sure that the game is valid
+            const events = await getEvents();
             const stations = await getStations();
             const byId = Object.fromEntries(stations.map((s) => [s.id, s]));
-            const { steps, finalScore } = applyRoute(route.length - 1, events, 20);
+            const { steps, finalScore } = applyRoute(route.length - 1, events, START_COINS);
 
             const persisted = steps.map((s, i) => ({
                 ord: i, from: route[i], to: route[i + 1], eventId: s.event.id, coinsAfter: s.coinsAfter,
-            }));
+            }));//is an array in which each object is a record of what happend on each segment of the journey
             await completeGame(gameId, finalScore, persisted);
 
             res.json(

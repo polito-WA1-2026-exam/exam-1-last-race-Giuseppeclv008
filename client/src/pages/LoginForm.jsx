@@ -28,11 +28,11 @@ export default function LoginForm() {
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Username</Form.Label>
-            <Form.Control value={username} onChange={(e) => setUsername(e.target.value)} autoFocus />
+            <Form.Control autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} autoFocus />
           </Form.Group>
           <Form.Group className="mb-4">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Form.Control type="password" autoComplete ="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </Form.Group>
           <Button type="submit" className="w-100">Login</Button>
         </Form>

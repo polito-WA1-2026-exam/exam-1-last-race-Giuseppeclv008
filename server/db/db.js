@@ -3,7 +3,7 @@ import sqlite3 from "sqlite3";
 export const DB_PATH = "db/lastrace.db";
 
 // Singleton pattern to ensure that only one database connection is established
-// If the database connection has already been established, it returns the existing promise
+// If the database connection has already been established, it returns the existing object
 
 let db;
 
